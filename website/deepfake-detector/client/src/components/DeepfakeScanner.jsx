@@ -35,22 +35,22 @@ const DeepfakeScanner = () => {
         setIsLoading(true)
         setError("")
 
-        try {
-            // Simulate API call with a timeout
-            await new Promise((resolve) => setTimeout(resolve, 2000))
+        //     try {
+        //         // Simulate API call with a timeout
+        //         await new Promise((resolve) => setTimeout(resolve, 2000))
 
-            // Mock result - in a real app, this would come from your API
-            setResult({
-                isDeepfake: Math.random() > 0.5,
-                confidence: Math.floor(Math.random() * 100),
-                analysisTime: (Math.random() * 2 + 0.5).toFixed(2),
-            })
-        } catch (err) {
-            setError("An error occurred during analysis. Please try again.")
-            console.error(err)
-        } finally {
-            setIsLoading(false)
-        }
+        //         // Mock result - in a real app, this would come from your API
+        //         setResult({
+        //             isDeepfake: Math.random() > 0.5,
+        //             confidence: Math.floor(Math.random() * 100),
+        //             analysisTime: (Math.random() * 2 + 0.5).toFixed(2),
+        //         })
+        //     } catch (err) {
+        //         setError("An error occurred during analysis. Please try again.")
+        //         console.error(err)
+        //     } finally {
+        //         setIsLoading(false)
+        //     }
     }
 
     return (
@@ -117,8 +117,8 @@ const DeepfakeScanner = () => {
                         type="submit"
                         disabled={isLoading || (!file && !url)}
                         className={`px-6 py-3 rounded-md text-white font-medium ${isLoading || (!file && !url)
-                                ? "bg-gray-400 cursor-not-allowed"
-                                : "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                             }`}
                     >
                         {isLoading ? (
@@ -145,7 +145,7 @@ const DeepfakeScanner = () => {
                 </div>
             </form>
 
-            {result && (
+            {/* {result && (
                 <div
                     className={`mt-8 p-6 rounded-lg ${result.isDeepfake ? "bg-red-50 border border-red-200" : "bg-green-50 border border-green-200"
                         }`}
@@ -168,10 +168,10 @@ const DeepfakeScanner = () => {
                                     ? "This content shows signs of manipulation. We recommend verifying its authenticity from other sources."
                                     : "This content appears to be authentic based on our analysis."}
                             </p>
-                        </div>
-                    </div>
+                        </div> 
+                     </div>
                 </div>
-            )}
+            )} */}
         </div>
     )
 }
