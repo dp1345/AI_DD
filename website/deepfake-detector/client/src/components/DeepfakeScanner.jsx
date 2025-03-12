@@ -83,7 +83,7 @@ const DeepfakeScanner = () => {
                                 />
                             </svg>
                             <span className="text-gray-600 font-medium">
-                                {file ? file.name : "Click to upload an image or video"}
+                                {file ? file.name : "Click to upload an  video"}
                             </span>
                             <span className="text-sm text-gray-500 mt-1">or drag and drop</span>
                         </label>
@@ -104,7 +104,7 @@ const DeepfakeScanner = () => {
                             id="url-input"
                             value={url}
                             onChange={handleUrlChange}
-                            placeholder="https://example.com/image.jpg"
+                            placeholder="https://example.com/video"
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>

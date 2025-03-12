@@ -1,40 +1,40 @@
 const ThreatInfo = () => {
     const threats = [
-        {
-            title: "Identity Theft",
-            description: "Deepfakes can be used to impersonate individuals, potentially leading to identity theft and fraud.",
-            icon: "user-x",
-        },
-        {
-            title: "Misinformation",
-            description: "Synthetic media can spread false information rapidly, undermining trust in authentic content.",
-            icon: "alert-triangle",
-        },
-        {
-            title: "Reputation Damage",
-            description:
-                "Individuals may suffer severe reputation damage from convincing deepfakes depicting them in compromising situations.",
-            icon: "shield-off",
-        },
-        {
-            title: "Financial Fraud",
-            description:
-                "Voice cloning and video deepfakes have been used to commit financial fraud by impersonating executives or trusted figures.",
-            icon: "dollar-sign",
-        },
+        // {
+        //     title: "Identity Theft",
+        //     description: "Deepfakes can be used to impersonate individuals, potentially leading to identity theft and fraud.",
+        //     icon: "user-x",
+        // },
+        // {
+        //     title: "Misinformation",
+        //     description: "Synthetic media can spread false information rapidly, undermining trust in authentic content.",
+        //     icon: "alert-triangle",
+        // },
+        // {
+        //     title: "Reputation Damage",
+        //     description:
+        //         "Individuals may suffer severe reputation damage from convincing deepfakes depicting them in compromising situations.",
+        //     icon: "shield-off",
+        // },
+        // {
+        //     title: "Financial Fraud",
+        //     description:
+        //         "Voice cloning and video deepfakes have been used to commit financial fraud by impersonating executives or trusted figures.",
+        //     icon: "dollar-sign",
+        // },
     ]
 
     const protectionTips = [
-        "Verify content through multiple trusted sources",
-        "Check for visual inconsistencies in suspected deepfakes",
-        "Be skeptical of sensational content, especially if it lacks context",
-        "Use deepfake detection tools like this one",
-        "Report suspected deepfakes to the platform where they appear",
+        // "Verify content through multiple trusted sources",
+        // "Check for visual inconsistencies in suspected deepfakes",
+        // "Be skeptical of sensational content, especially if it lacks context",
+        // "Use deepfake detection tools like this one",
+        // "Report suspected deepfakes to the platform where they appear",
     ]
 
     return (
         <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Understanding Deepfake Threats</h2>
+            {/* <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Understanding Deepfake Threats</h2> */}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 {threats.map((threat, index) => (
@@ -66,7 +66,7 @@ const ThreatInfo = () => {
             </div>
 
             <div className="bg-blue-50 rounded-lg p-6 border border-blue-100">
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">How to Protect Yourself</h3>
+                {/* <h3 className="text-xl font-semibold text-gray-800 mb-4">How to Protect Yourself</h3> */}
                 <ul className="space-y-3">
                     {protectionTips.map((tip, index) => (
                         <li key={index} className="flex items-start">
@@ -95,7 +95,7 @@ const ThreatInfo = () => {
                     rel="noopener noreferrer"
                     className="inline-block mt-2 text-blue-600 hover:text-blue-800 hover:underline"
                 >
-                    Learn more about deepfakes from the FTC
+                    {/* Learn more about deepfakes from the FTC */}
                 </a>
             </div>
         </div>
