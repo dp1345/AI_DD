@@ -20,7 +20,7 @@ AI_DD is a deepfake face detection project that leverages state-of-the-art deep 
 
 - Node.js and npm (for the frontend)
 - Python 3.x (for the backend)
-- (Optional) Kaggle API credentials if you wish to retrain or experiment with datasets
+- Kaggle dataset celeb-df(v1) and trained model on it
 
 ### Installation
 
