@@ -1,0 +1,12 @@
+# Ignore specific model and data files
+backend/f_convnext.pt
+backend/f_effb0.pt
+backend/f_xception.pt
+backend/shape_predictor_68_face_landmarks_GTX.dat
+
+# Ignore all .pt files in backend
+backend/*.pt
+
+# Ignore dependencies and test folders
+frontend/node_modules/
+frontend/cypress/
