@@ -13,6 +13,9 @@ from flask_cors import CORS
 from efficientnet_pytorch import EfficientNet
 import pretrainedmodels
 
+# Get the directory of the current script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # Define model architectures
 class EfficientNetB0Model(torch.nn.Module):
     def __init__(self):
@@ -64,25 +67,61 @@ class XceptionModel(nn.Module):
 # Initialize Flask app
 app = Flask(__name__)
 CORS(app)
-app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'uploads')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
+# Load models safely
+def load_models_safely():
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    models = {}
+    
+    # Use os.path.join for cross-platform path handling
+    model_files = {
+        "EfficientNetB0": os.path.join(BASE_DIR, 'model_files', 'f_effb0.pt'),
+        "ConvNeXtTiny": os.path.join(BASE_DIR, 'model_files', 'f_convnext.pt'),
+        "Xception": os.path.join(BASE_DIR, 'model_files', 'f_xception.pt')
+    }
+    
+    for model_name, filepath in model_files.items():
+        if os.path.exists(filepath):
+            try:
+                print(f"Loading {model_name} from {filepath}")
+                model = torch.load(filepath, map_location=device, weights_only=False)
+                model.to(device).eval()
+                models[model_name] = model
+                print(f"Successfully loaded {model_name}")
+            except Exception as e:
+                print(f"Error loading {model_name}: {e}")
+        else:
+            print(f"Model file not found at {filepath}")
+            # List available files in model_files directory for debugging
+            model_dir = os.path.join(BASE_DIR, 'model_files')
+            if os.path.exists(model_dir):
+                print(f"Available files in {model_dir}:")
+                for file in os.listdir(model_dir):
+                    print(f"  - {file}")
+            else:
+                print(f"Model directory {model_dir} does not exist")
+    
+    return models, device
+
 # Load models once
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+models, device = load_models_safely()
 
-models = {
-    "EfficientNetB0": torch.load('f_effb0.pt', map_location=device,weights_only=False),
-    "ConvNeXtTiny": torch.load('f_convnext.pt', map_location=device,weights_only=False),
-    "Xception": torch.load('f_xception.pt', map_location=device,weights_only=False)
-}
-
-# Set all models to evaluation mode
-for model in models.values():
-    model.to(device).eval()
-
-# Load dlib's face detector and shape predictor
-dlib_detector = dlib.get_frontal_face_detector()
-shape_predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks_GTX.dat')
+# Load dlib's face detector and shape predictor safely
+try:
+    dlib_detector = dlib.get_frontal_face_detector()
+    shape_predictor_path = os.path.join(BASE_DIR, 'shape_predictor_68_face_landmarks_GTX.dat')
+    if os.path.exists(shape_predictor_path):
+        shape_predictor = dlib.shape_predictor(shape_predictor_path)
+        print("Dlib shape predictor loaded successfully")
+    else:
+        print(f"Shape predictor file not found at {shape_predictor_path}")
+        shape_predictor = None
+except Exception as e:
+    print(f"Error loading dlib components: {e}")
+    dlib_detector = None
+    shape_predictor = None
 
 # Preprocess image
 def preprocess_image(image, model_name):
@@ -108,6 +147,11 @@ def preprocess_image(image, model_name):
 
 # Extract face using dlib's shape predictor
 def crop_face_with_landmarks(frame, rect):
+    if shape_predictor is None:
+        # Fallback: return the detected face rectangle
+        x, y, w, h = rect.left(), rect.top(), rect.width(), rect.height()
+        return frame[y:y+h, x:x+w]
+    
     # Get the landmarks
     landmarks = shape_predictor(frame, rect)
     x_min = min([landmarks.part(i).x for i in range(68)])
@@ -125,7 +169,12 @@ def predict_video(video_path, model, model_name, num_frames=15):
     predictions = []
     confidences = []  # List to store confidence scores
 
-    for i in np.linspace(0, int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) - 1, num_frames, dtype=int):
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    if total_frames == 0:
+        cap.release()
+        return {"prediction": "Error: Could not read video", "confidence": None}
+
+    for i in np.linspace(0, total_frames - 1, num_frames, dtype=int):
         cap.set(cv2.CAP_PROP_POS_FRAMES, i)
         ret, frame = cap.read()
         if ret:
@@ -135,7 +184,7 @@ def predict_video(video_path, model, model_name, num_frames=15):
             if faces_mtcnn:  # Use MTCNN for face detection
                 x, y, w, h = faces_mtcnn[0]['box']
                 face_img = Image.fromarray(rgb_frame[y:y+h, x:x+w]).convert('RGB')
-            else:  # Fallback to dlib if MTCNN fails
+            elif dlib_detector is not None:  # Fallback to dlib if MTCNN fails
                 dlib_faces = dlib_detector(rgb_frame, 1)
                 if dlib_faces:
                     d = dlib_faces[0]
@@ -143,6 +192,8 @@ def predict_video(video_path, model, model_name, num_frames=15):
                     face_img = Image.fromarray(cropped_face).convert('RGB')
                 else:
                     continue  # Skip if no face detected
+            else:
+                continue  # Skip if no face detection method available
                 
             input_tensor = preprocess_image(face_img, model_name).to(next(model.parameters()).device)
             with torch.no_grad():
@@ -173,6 +224,9 @@ def predict_video(video_path, model, model_name, num_frames=15):
 # Define routes
 @app.route('/predict', methods=['POST'])
 def predict():
+    if not models:
+        return jsonify({"error": "No models loaded"}), 500
+        
     if 'file' not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
     
@@ -203,7 +257,17 @@ def predict():
 
 @app.route('/')
 def home():
-    return jsonify({"message": "Video Authenticity Detector Backend is Running"}), 200
+    return jsonify({
+        "message": "Video Authenticity Detector Backend is Running",
+        "models_loaded": list(models.keys()),
+        "total_models": len(models)
+    }), 200
+
+@app.route('/health')
+def health():
+    return jsonify({"status": "healthy", "models_loaded": len(models)}), 200
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('DEBUG', 'False').lower() == 'true'
+    app.run(host='0.0.0.0', port=port, debug=debug)

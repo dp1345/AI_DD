@@ -6,3 +6,9 @@ mtcnn
 pillow
 werkzeug
 dlib
+efficientnet_pytorch
+pretrainedmodels
+numpy
+flask-cors
+requests
+gunicorn

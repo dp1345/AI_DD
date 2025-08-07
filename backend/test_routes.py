@@ -1,7 +1,7 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import unittest
-from app import create_app
+from backend.main import create_app
 
 class TestRoutes(unittest.TestCase):
     def setUp(self):
