@@ -1,9 +1,9 @@
 # Created by pytest automatically.
-.pytest_cache/
-.venv/
-clean_env/
-model_files/
-cypress/
-dist/
-node_modules/
-cypress.config.js
+backend/.pytest_cache/
+backend/.venv/
+backend/clean_env/
+backend/model_files/
+frontend/cypress/
+frontend/dist/
+frontend/node_modules/
+frontend/cypress.config.js
