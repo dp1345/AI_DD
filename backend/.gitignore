@@ -1,19 +1,15 @@
 # Created by pytest automatically.
-backend/.pytest_cache/
-backend/.venv/
-backend/clean_env/
-backend/model_files/
-frontend/cypress/
-frontend/dist/
-frontend/node_modules/
-frontend/cypress.config.js
+.pytest_cache/
+clean_env/
+model_files/
+uploads/
 
 # Ignore common virtual environments
 .venv/
 venv/
 env/
-backend/.venv/
-backend/env/
+.venv/
+env/
 
 # Python cache and bytecode
 __pycache__/
@@ -44,9 +40,6 @@ node_modules/
 *.so
 *.dylib
 
-# Ignore model files and uploads folders
-backend/model_files/
-backend/uploads/
 
 # Test cache
 .pytest_cache/
