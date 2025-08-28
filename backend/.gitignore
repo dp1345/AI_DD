@@ -18,6 +18,10 @@ __pycache__/
 
 # Editor and OS files
 .vscode/
+backend/.venv/
+backend/clean_env/
+backend/model_files/
+backend/uploads/
 .idea/
 .DS_Store
 Thumbs.db
