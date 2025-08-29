@@ -50,3 +50,5 @@ backend/uploads/
 
 # Test cache
 .pytest_cache/
+
+.env
